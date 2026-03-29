@@ -1,0 +1,10 @@
+{
+  "name": "subhub",
+  "private": true,
+  "scripts": {
+    "build": "pnpm --filter web build",
+    "dev": "pnpm --filter web dev",
+    "lint": "pnpm --filter web lint",
+    "preview": "pnpm --filter web preview"
+  }
+}

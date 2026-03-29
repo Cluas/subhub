@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Build frontend
+        run: |
+          pnpm install --frozen-lockfile
+          cd web && pnpm install --frozen-lockfile && pnpm build
+
+      - name: Run Go tests
+        run: go test -count=1 -race ./...
+
+      - name: Build binary
+        run: CGO_ENABLED=0 go build -o subhub ./cmd/subhub
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Frontend install & lint
+        run: |
+          pnpm install --frozen-lockfile
+          cd web && pnpm install --frozen-lockfile && pnpm lint
+
+      - name: Build frontend (required for go:embed)
+        run: cd web && pnpm build
+
+      - name: Go vet
+        run: go vet ./...

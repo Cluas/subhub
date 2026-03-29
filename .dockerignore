@@ -1,0 +1,16 @@
+# Go build artifacts
+subhub
+subhub-test
+
+# Frontend build artifacts (rebuilt fresh inside Docker)
+web/dist/
+web/node_modules/
+
+# Development/tooling files
+.git/
+.gsd/
+
+# IDE / OS files
+.DS_Store
+.env
+.env.*
